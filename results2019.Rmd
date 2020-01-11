@@ -1,0 +1,859 @@
+---
+title: "embRACE LA 2019"
+author: "Advancement Project California"
+date: "12/18/19"
+output:
+  html_document:
+    code_folding: hide
+    fig_caption: yes
+    fig_height: 5
+    fig_width: 10
+    number_sections: no
+    theme: flatly
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+subtitle: 'Results from Community Survey and Council Dinners: Analysis for embRACE
+  Workgroup'
+---
+<style type="text/css">
+.main-container {
+  max-width: 1800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(comment=FALSE, message=FALSE, warning=FALSE, echo=FALSE
+)
+
+# install.packages('tidyr')
+# install.packages('ggplot2')
+# install.packages('tidycensus')
+# install.packages('RPostgreSQL')
+# install.packages('Rtools')
+# install.packages('dplyr')
+# install.packages('kableExtra')
+# install.packages('stringr')
+# install.packages('leaflet')
+# install.packages('plotly')
+# install.packages('knitr')
+# install.packages('devtools')
+# install.packages('install_github')
+# install.packages('Rtools')
+# install.packages("forcats")
+# install.packages('stargazer')
+# install.packages("htmltools")
+library(htmltools)
+library(forcats)
+library(tidyr)
+library(ggplot2)
+library(RPostgreSQL)
+library(plotly)
+library(dplyr)
+library(stringr)
+library(knitr)
+library(devtools)
+library(forcats)
+library(knitr)
+library(kableExtra)
+library(stargazer)
+# install.packages("maps")
+#library(ggthemes)
+library(sp)
+library(ggplot2)
+# install.packages("muRL")
+# install.packages("rgdal")
+library(rgdal)
+library(sf)
+library(leaflet)
+library(sf)
+library(rgdal)
+#library(rpostgis)
+library(RColorBrewer)
+library(data.table)
+library(stringr)
+library(ggplot2)
+library(RColorBrewer)
+library(dplyr)
+library(RPostgreSQL)
+library(scales)
+#library(ggthemes)
+library(DT)
+
+
+setwd("W:/Project/OSI/EmbRACELA/")
+
+# Data Setup
+pw <- {
+  "password"
+}
+# loads the PostgreSQL driver
+drv <- dbDriver("PostgreSQL")
+
+con <- dbConnect(drv, dbname = "embrace_la",
+                 host = "aws-postgres-db.c5udgz7ro8hq.us-west-2.rds.amazonaws.com", port = 5432,
+                 user = "postgres", password = pw)
+
+# load pre survey form responses table from postgres 
+presurvey_clean <- dbGetQuery(con, "SELECT * FROM presurvey_responses_clean")
+
+# load community survey form responses table from postgres 
+commsurvey_clean <- dbGetQuery(con, "SELECT * FROM commsurvey_clean")
+
+# just a note of reference to inserting text #https://monashbioinformaticsplatform.github.io/2017-11-16-open-science-training/topics/rmarkdown.html
+#https://rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf
+
+```
+# Overview
+Between September 10th and November 26th, 2019, embRACE LA  
+
+* Collected __542 online surveys__ from Angelinos who either live, work, or study in the city(i);  
+* Held __11 conversations__ with city council members; and  
+* Collected __112 pre-conversation__ and __80 post-conversation surveys__ from dinner participants.  
+
+The following reviews the results from the surveys and dinner conversations. Key takeaways include  
+
+*Perceptions*
+
+  * The great majority of Angelinos who participated in embRACE LA(ii) do not believe LA City is an equitable and inclusive place to live. 
+  * People who participated in council dinners described an equitable and inclusive city as a place with equal access to opportunities, cohesive and engaged communities, and opportunities for youth.
+  * Across community surveys and council dinners, housing was viewed as a major barrier to greater equity in the city as well as racism and discrimination. More broadly, during council dinners, inequities in access to opportunities--including housing, education, and the economy--as well as inequities in government, like discriminatory policies in housing and policing and representation of people of color, were lifted as barriers keeping LA from getting to equity.
+  * Trust in City government is low when it comes to trusting the City to provide equal services or opportunities to participate in decision-making.  
+
+*ORE Support and Priorities*
+
+  * The overwhelming majority believe creating greater equity should be a HIGH priority for City government and the great majority of embRACE dinner participants support an ORE.  
+  * The majority prioritize activities for the ORE that involve tangible investments in community, like applying equitable budgeting tools, investing in local minority-owned businesses, hiring diverse city staff from local communities, and providing grants to local organizations working on equity.  
+  * Other more structure and policy building roles are also priorities for the ORE--like assessing current and new city policies based on their racial equity impact, building opportunities and knowledge for community engagement, tracking and reporting data on racial equity indicators to the public and city council.
+  * In developing and implementing the ORE, dinner participants emphasized considering political will to follow through on the ORE, ensuring accountability of the ORE, building out the power and authority of the ORE, and making sure the office has the right leaders.  
+
+*(i)Note: A total of 567 community surveys were gathered on the website, but only 542 of these were from individuals who reported either living, working, or studying in LA City. This analysis does not include the 25 individuals without a connection to LA City.*  
+*(ii)Note: When interpreting these findings, do keep in mind that they represent the subset of Angelinos who decided to be involved in embRACE either through the survey or the dinners. People who completed the community survey are more likely to identify as women, Black or African American, or ages 25-44 compared to the LA City population. Additionally, many respondents came from council districts in South LA and Mid-City.*  
+
+# Vision for an equitable LA City  
+
+During conversations, dinner participants imagined an equitable and inclusive LA City as a place with  
+
+  * *Access to Opportunities*: Across several dinners, they emphasized a vision of a city where all communities have equal access to tangible resources and opportunities, like housing, income and wealth, economic opportunity (equity in business and employment), and education.  
+  * *Cohesive and engaged communities*:They described a place with engaged and cohesive communities. They talked about communities being unified across racial lines and residents knowing and caring for each other. In a handful of dinners, they described communities being more civically engaged and aware of issues.  
+  * *Opportunities for youth*: In a few dinners, participants described wanting more opportunities for youth, including additional supports, programming, education, and opportunities for youth leadership.  
+
+
+
+# How equitable is LA City? 
+* Only 1 in 4 (22%) of Angelinos who took the survey agreed or strongly agreed that LA City is an equitable and inclusive place to live for people of all races and ethnicities.  
+* Only 1 in 4 (26%) of people attending our dinners agreed or strongly agreed with the same statement. 
+
+
+* About 3 in 4 of Angelinos who took the community survey had little or no trust in the city to provide equal city services (77%) or equal opportunities to participate in decision-making for all people (74%).  
+* Dinner participants were slightly more trusting of the city. Though, more than 1 in 2 reported little or no trust in the city to provide people of all races and ethnicities equal city services (69%), equal opportunities to participate in city decision-making (60%), or generally equal treatment (55%).
+
+
+* Housing affordability, gentrification and displacement, and racism and discrimination are viewed as the top barriers to creating a more equitable LA by Angelinos who took the community survey.   
+* Dinner participants most often believed housing affordability, income, and racism and discrimination were among the top 3 barriers to creating a more equitable LA.  
+* Over 50% of Angelinos who took the community survey or participated in the dinners thought housing affordability was one of the top 3 barriers to greater equity in LA.  
+* 30% or more of Angelinos who took the community survey or participated in the dinners thought racism and discrimination were one of the top 3 barriers to greater equity in LA.  
+
+* In dinner conversations, people expanded on these major trends  
+  + *Inequity in access to opportunities*: Across nearly all dinners, dinner participants described inequities in access to opportunities as primary barriers to getting to a more equitable and inclusive city. They emphasized housing most strongly, including displacement, gentrification, housing affordability, and homelessness. They also lifted up inequities in education, the economy (employment, income) and business, which sometimes tied to liveability in the city.  
+  + *Inequity in government and government policies*: In several dinners, dinner participants lifted up past and current government policies and representation of people of color in government as challenges to getting to equity. Some participants called out racist government policies, like redlining and frisking. In a handful of dinners, participants touched on the need for more community engagement and representation of people of color in government.  
+
+
+## Is LA City equitable {.tabset .tabset-pills}
+
+### What community members said
+
+```{r}
+is_la_equitable <- dbGetQuery(con, "SELECT * FROM commsurvey_is_la_equitable") #grab view from potsgres 
+
+#formating
+
+is_la_equitable_count<-c('n=21', 'n=95', 'n=79', 'n=229', 'n=116')
+equitable_x<-list(title="", 
+                  tickformat="%")
+equitable_y<-list(title="")
+
+t<-list(family="arial")
+m <- list(l=150, r=20, b=10, t=100) 
+
+
+#graph
+
+plot_ly(is_la_equitable, x=~pct , y=~fct_rev(factor(is_la_equitable, levels=is_la_equitable)), type = 'bar', text=is_la_equitable_count, orientation='h',
+        marker=list(color='62bce5'))%>%
+  layout(title= list(text=str_wrap("LA City is an equitable and inclusive place to live for people of all races and ethnicities"), x=0.1), xaxis=equitable_x, yaxis=equitable_y, font=t, plot_bgcolor="#ebebeb", font=t, margin=m)
+
+```
+
+
+### What dinner participants said
+```{r}
+
+pre_is_la_equitable <- dbGetQuery(con, "SELECT * FROM presurvey_is_la_equitable") #grab view from potsgres 
+
+#formating
+
+pre_is_la_equitable_freq<-c('n=5', 'n=23', 'n=17', 'n=48', 'n=18')
+equitable_x<-list(title="", 
+                  tickformat="%")
+
+equitable_y<-list(title="")
+
+t<-list(family="arial")
+m <- list(l=150, r=20, b=10, t=100) # l = left; r = right; t = top; b = bottom
+
+#graph
+
+plot_ly(pre_is_la_equitable, x=~percent , y=~fct_rev(factor(response, levels=response)), type = 'bar', text=pre_is_la_equitable_freq, orientation='h',  marker=list(color='62bce5'))%>%
+  layout(margin=m, title=list(x=0.1, text=str_wrap("LA City is an equitable and inclusive place to live for people of all races and ethnicities"), x=0.1), xaxis=equitable_x, yaxis=equitable_y, font=t, plot_bgcolor='#ebebeb')
+
+
+```
+
+
+
+## Top barriers to equity {.tabset .tabset-pills}
+
+### What community members said
+```{r}
+barriers_to_equity<-dbGetQuery(con, "SELECT response, freq, percent FROM commsurvey_barriers_to_equity WHERE percent > 26 OR percent < 6") 
+
+ kable(barriers_to_equity, digits=0, col.names=c("","Count","Percent"))%>%
+  kable_styling()%>%
+    row_spec(1:3, bold = T, color ="white", background="#62bce5", extra_css = "border-bottom: 1px solid")%>%
+    row_spec(4:8, bold=T, color= "white", background="#6c90ca", extra_css = "border-bottom: 1px solid")%>%
+    add_header_above(c("What are the top 3 barriers to creating a more equitable and inclusive city? (Most and least common barriers)"=1," "=2), align="l")
+
+```
+
+### What dinner participants said
+```{r}
+pre_barriers_to_equity<-dbGetQuery(con, "SELECT response, freq, percent FROM presurvey_barriers_to_equity WHERE percent > 30 OR percent < 7") 
+#top 3 and bottom 5
+
+  kable(pre_barriers_to_equity, digits=0, col.names=c(" ","Count","Percent"))%>%
+  kable_styling(bootstrap_options = "striped")%>%
+        row_spec(1:3, bold = T, color ="white", background="#62bce5",  extra_css = "border-bottom: 1px solid")%>%
+        row_spec(4:6, bold=T, color= "white", background="#6c90ca",  extra_css = "border-bottom: 1px solid")%>%
+      add_header_above(c("What are the top 3 barriers to creating a more equitable and inclusive city? (Most and least common barriers)"=1," "=2), align="l")
+  
+
+```
+
+## Trust in City government {.tabset .tabset-pills}
+### What community members said
+```{r}
+trust<-dbGetQuery(con, "SELECT * FROM commsurvey_trust_la_city")
+
+trust$question_text<-trimws(trust$question_text, which = c("both", "left", "right"), whitespace = "[ \t\r\n]") #remove whitespace from 'question_text' column
+
+
+#create new column converting the 'percent' column from decimals to percent 
+trust$pct_round <- paste(round((trust$percent)*100,digits=0),"%",sep="")
+
+##This creates the order we want for the 'question_text:
+
+trust$factor<-factor(trust$question_text, ordered=TRUE, levels=c("How much do you trust LA City staff to treat people of all races and ethnicities equally?", "How much do you trust LA City to provide equal city services to all people?","How much do you trust LA City government to provide equal opportunities for all people to participate in city decision-making?"))
+
+##This creates the order we want for 'response' 
+trust$legend <- factor(trust$response, ordered = TRUE, levels=c("A great deal of trust","A fair amount of trust","Little trust","No trust at all"))
+
+##final graph
+ggplot(data=trust, aes(x=fct_rev(factor), y= percent, fill=legend), margin=list(r=500), length=1000) + geom_bar(stat="identity") + scale_x_discrete(name="", labels = function(x) str_wrap(x, width = 20)) + scale_y_continuous(name="", labels=scales::percent)+ geom_text(aes(label=pct_round), position=position_stack(vjust=.5), size = 4)+scale_fill_brewer(palette='Blues') + coord_flip()+labs(fill="")+
+  theme(axis.text.y = element_text(size = 10), legend.text=element_text(size=12), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), plot.caption = element_text(hjust = 0))
+
+
+
+
+
+```
+
+### What dinner participants said
+```{r}
+presurvey_trust<-dbGetQuery(con, "SELECT * FROM presurvey_trust_la_city")
+presurvey_trust$question_text<-trimws(presurvey_trust$question_text, which = c("both", "left", "right"), whitespace = "[ \t\r\n]") #remove whitespace from 'question_text' column
+
+#create new column converting the 'percent' column from decimals to percent 
+presurvey_trust$pct_round <- paste(round((presurvey_trust$percent)*100,digits=0),"%",sep="")
+
+##This creates the order we want for the 'question_text:
+presurvey_trust$factor<-factor(presurvey_trust$question_text, ordered=TRUE, levels=c("How much do you trust LA City staff to treat people of all races and ethnicities equally?", "How much do you trust LA City to provide equal city services to all people?","How much do you trust LA City government to provide equal opportunities for all people to participate in city decision-making?"))
+
+##This creates the order we want for 'response' 
+presurvey_trust$legend <- factor(presurvey_trust$response, ordered = TRUE, levels=c("A great deal of trust","A fair amount of trust","Little trust","No trust at all"))
+
+##final graph
+ggplot(data=presurvey_trust, aes(x=fct_rev(factor), y= percent, fill=legend)) + geom_bar(stat="identity") + scale_x_discrete(name="", labels = function(x) str_wrap(x, width = 20)) + scale_y_continuous(name="", labels=scales::percent)+geom_text(aes(label=pct_round), position=position_stack(vjust=.5), size = 4)+scale_fill_brewer(palette='Blues')+ theme(axis.text.y = element_text(size = 10), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), plot.caption = element_text(hjust = 0), legend.text=element_text(size=12))+labs(fill="")+coord_flip()
+
+
+
+#plot_ly(presurvey_trust, x=~question_text, y=~percent, type='bar', orientation='h', name='question_text')%>%
+ # layout(barmode='stack', xaxis=list(title=" "), yaxis=list(title=' '))
+
+# pre_trust_x<-list(title="",tickformat="%")
+# pre_trust_y<-list(title="")
+
+#plot_ly(presurvey_trust, x = ~"No trust at all", y = ~question_text, type = 'bar', name = 'No trust at all', orientation='h') %>%add_trace(X = ~"Little trust", name = "Little trust") %>% add_trace(X = ~"A fair amount of trust", name = "A fair amount of trust") %>%  add_trace(X = ~"A great deal of trust", name = "A great deal of trust") %>%layout(xaxis = list(title = "",                    showgrid = FALSE,
+  #                    showline = FALSE,
+    #                  showticklabels = FALSE,
+     #                 zeroline = FALSE),
+      #   yaxis = list(title = "",
+       #               showgrid = FALSE,
+        #             showline = FALSE,
+        #             showticklabels = FALSE,
+          #            zeroline = FALSE),barmode = 'stack')
+```
+
+# How much to prioritize equity and the ORE?
+* Over 4 out of 5 survey respondents (84%) and dinner participants (84%) believed creating greater equity and inclusivity in our city should be a HIGH priority for LA City government and officials.  
+
+* Over 4 in 5 people attending our dinners (85%) supported or strongly supported created an Office of Racial Equity in LA City.  
+
+
+
+## How much to prioritize equity {.tabset .tabset-pills}
+
+### What community members said
+```{r}
+equity_priority<-dbGetQuery(con, 'SELECT * FROM commsurvey_equity_priority')
+
+#formatting
+
+equity_priority_text<-c('n=451', 'n=74', 'n=15')
+priority_x<-list(title="", tickformat="%")
+priority_y<-list(title="")
+m <- list(l=150, r=20, b=10, t=100) 
+
+
+#graph
+plot_ly(equity_priority, x=~pct ,  y=~fct_rev(factor(equity_priority, levels=equity_priority)), type = 'bar', text=equity_priority, orientation='h', marker=list(color=('62bce5')))%>%
+  layout(title=list(x=0.1, text=str_wrap("How much of a priority should creating greater equity and inclusivity in our city be to LA City government and officials?")), margin=m, strwrap(equity_priority$pct, width=10), xaxis=priority_x, yaxis=priority_y, font=t, plot_bgcolor="#ebebeb")
+
+```
+
+### What dinner participants said
+```{r}
+
+pre_equity_priority<-dbGetQuery(con, 'SELECT * FROM presurvey_equity_priority')
+
+pre_equity_priority$response<-trimws(pre_equity_priority$response, which = c("both", "left", "right"), whitespace = "[ \t\r\n]") #remove whitespace from 'question_text' column
+#formatting
+pre_equity_priority$factor <- factor(pre_equity_priority$response, ordered = TRUE, levels=c("High priority","Somewhat of a priority","Not a priority"))
+
+priority_x<-list(title="", tickformat="%")
+priority_y<-list(title="")
+m <- list(l=150, r=20, b=10, t=100) 
+t<-list(family="arial")
+
+#graph
+plot_ly(pre_equity_priority, x=~percent, y=~fct_rev(factor), type ='bar', text=pre_equity_priority, orientation='h', marker=list(color=('#62bce5')))%>%
+  layout(title=list(x=0.1, text=str_wrap("How much of a priority should creating greater equity and inclusivity in our city be to LA City government and officials?")), font=t, margin=m, xaxis=priority_x, yaxis=priority_y, plot_bgcolor="#ebebeb")
+
+
+```
+
+## Degree of support for an ORE {.tabset .tabset-pills}
+### What dinner participants said
+```{r}
+
+post_support<-dbGetQuery(con, 'SELECT * FROM postsurvey_ore_support')
+post_support$response<-trimws(post_support$response, which = c("both", "left", "right"), whitespace = "[ \t\r\n]") #remove whitespace from 'question_text' column
+#formatting
+post_support$factor <- factor(post_support$response, ordered = TRUE, levels=c("Strongly support","Support", "Neither oppose or support", "Oppose", "Strongly oppose"))
+support_x<-list(title="", tickformat="%")
+support_y<-list(title="")
+
+#formatting 
+t<-list(family="arial")
+m <- list(l=150, r=20, b=10, t=100) 
+
+#graph
+
+plot_ly(post_support, x=~percent, y=~fct_rev(factor), type ='bar', text=post_support, orientation='h', marker=list(color=('62bce5')))%>%
+  layout(title=list(x=0.1, text=("How much do you support creating an Office of Racial Equity in LA City?")), xaxis=support_x, yaxis=support_y, font=t, margin=m, plot_bgcolor="#ebebeb")
+
+```
+
+# What should an ORE do?
+* Angelinos who took the community survey most often believed that to work toward greater equity in LA, the city should invest dollars based on community need (69%), invest in local minority-owned businesses (64%), and make grants to local organizations that are addressing racial equity (60%).  
+
+* When asked to prioritize what the City should do first with an Office of Racial Equity, dinner participants most often prioritized applying equitable budgeting tools to make city investments based on need (19%).
+
+* Investments in local minority-owned business (76%), application of equitable budgeting tools (75%), hiring of diverse city staff from local communities (69%), and grants to local community organizations (68%) are potential ORE activities that dinner participants most often believed would have a HIGH impact on racial equity.  
+
+* In their conversations, dinner participants lifted up similar roles and other systems and structure for the ORE
+
+  + *Assessing current and new policies based on racial equity impact*: Across almost all of the dinners, dinner participants strongly voiced that the city and ORE could analyze city policies and decisions based on their racial equity impact and make recommendations to city council and other city departments. They called out the ORE making recommendations about housing development, economic development, and policing.  
+  + *Building opportunities and knowledge for community engagement*: In several dinners, participants talked about the City and ORE creating more spaces for community engagement. The ORE could act as a liaison to the City, connect those most impacted by inequities, or improve community engagement through community education or popular education. In dinners in South LA, participants also talked about the ORE providing spaces for youth leaders and engagement.   
+  + *Tracking and reporting on racial equity indicators*: In several dinners, dinner participants recommended that the ORE track and report on equity indicators, including sharing data or report cards with both the City and general public. Some dinner participants called out measuring key topics, like early life indicators for youth or criminal justice-related indicators, or general progress toward racial equity.  
+  + *Equitable investment in POC businesses*: In some dinners, participants talked about the City and ORE generating equitable investment in people of color-led businesses and communities of color.  
+  + *Creating opportunities for a diverse workforce*: Participants emphasized how the ORE could hire from local communities, including hiring people of color, providing workforce opportunities, and creating a youth leadership pipeline.  
+
+
+## What should LA City do {.tabset .tabset-pills}
+### What community members said
+```{r}
+#grab view and apply filters 
+
+equity_activities<-dbGetQuery(con, "SELECT response, freq, percent FROM commsurvey_greater_equity WHERE freq!=1")
+
+equity_activities$percent<-paste(round(equity_activities$percent*100,digits=0),"%",sep="") #change column from decimals to percents for percentage 
+
+#Create table
+
+  kable(equity_activities, digits=2, col.names=c("","Count","Percent"))%>%
+  kable_styling(bootstrap_options = "striped")%>%
+    row_spec(1:4, bold = T, color ="white", background="#62bce5",  extra_css = "border-bottom: 1px solid")%>%
+    row_spec(5:7, bold=T, color= "white", background="#55B7C0",  extra_css = "border-bottom: 1px solid")%>%
+    row_spec(8:11, bold=T, color= "white", background="#6c90ca",  extra_css = "border-bottom: 1px solid")%>%
+    add_header_above(c("What activities would you like to see happen in LA to work toward greater equity?"=1," "=2), align='l')
+    
+```
+
+## ORE's first step {.tabset .tabset-pills}
+### What dinner participants said
+```{r warning=FALSE}
+
+post_first<-dbGetQuery(con, 'SELECT * FROM postsurvey_ore_first_action')
+post_first_top<-dbGetQuery(con, "SELECT response, freq, percent FROM postsurvey_ore_first_action where percent>.10 or percent<.05")
+post_first_top$percent<-paste(round(post_first_top$percent*100,digits=0),"%",sep="") #change column from decimals to percents for percentage 
+
+
+  kable(post_first_top, digits=0, col.names=c("Activity","Count","Percent"))%>%
+  kable_styling(bootstrap_options = "striped")%>%
+    row_spec(1:3, bold = T, color ="white", background="#62bce5",  extra_css = "border-bottom: 1px solid")%>%
+    row_spec(4:5, bold=T, color= "white", background="#6c90ca",  extra_css = "border-bottom: 1px solid")%>%
+    add_header_above(c("What should an Office of Racial Equity do first? (Most and least common actions)"=1," "=2), align='l')
+  
+# keeping for good measure
+#post_first$wrapped <- sapply(post_first$response, 
+                     # FUN = function(question_text) {paste(strwrap(question_text, width = 40), collapse = "<br>")}) ##wrap text for y axis 
+
+#post_x<-list(title="", tickformat="%")
+#post_y<-list(title="")
+
+#plotly graph
+
+#plot_ly(post_first, x=~percent, y=~reorder(wrapped, percent), type ='bar', text=post_first, orientation='h', margin=list(l=400, b=200), #height=1000)%>%
+#  layout(strwrap(post_first, width=20),title="What action should an Office of Racial Equity do first in LA city?", xaxis=post_x, yaxis=post_y)
+
+```
+
+## Activities based on highest impact {.tabset .tabset-pills}
+### What dinner participants said
+```{r warning=FALSE}
+post_impact<-dbGetQuery(con, 'SELECT * FROM postsurvey_action_impact')
+post_high_impact <- filter(post_impact[order(-post_impact$percent) , ], response == "High impact")
+
+ post_impact_trim<- subset(post_high_impact, select = c(question_text, freq, percent))
+ post_impact_trim$percent<-paste(round(post_impact_trim$percent*100,digits=0),"%",sep="") #round percentage
+
+
+
+  kable(post_impact_trim, digits=0, col.names=c("Activity","Count","Percent High Impact"))%>%
+  kable_styling(bootstrap_options = "striped")%>%
+    row_spec(1:4, bold = T, color ="white", background="#62bce5",  extra_css = "border-bottom: 1px solid")%>%
+    row_spec(5:8, bold = T, color ="white", background="#55B7C0",  extra_css = "border-bottom: 1px solid")%>%
+    row_spec(9:12, bold=T, color= "white", background="#6c90ca",  extra_css = "border-bottom: 1px solid")%>%
+    add_header_above(c("How much of an impact on equity in the city? (Activity ratings based on % HIGH impact)"=1," "=2), align="l")
+  
+#post_x<-list(title="")
+#post_y<-list(title="", labels = function (y) str_wrap(y, width = 20))
+#post_high_impact$wrapped <- sapply(post_high_impact$question_text, 
+                     # FUN = function(question_text) {paste(strwrap(question_text, width = 40), collapse = "<br>")}) ##wrap text for y axis 
+
+#plot_ly(post_high_impact, x=~percent, y=~reorder(wrapped, percent), type ='bar', text=post_high_impact, orientation='h', margin=list(l=400, b=200), height=1000)%>%
+ # layout(title="Potential ORE Functions based on Ratings of High Impact", xaxis=post_x, yaxis=post_y)
+
+
+```
+
+# Special considerations
+* During dinners, partners and community members brought up key considerations and concerns in developing and implementing an ORE in the city. Their key points included  
+  + *Ensure political will*: Participants across nearly all dinners described being concerned about support and political will from leaders as well as the degree to which the city would follow through on its commitments.  
+  + *Ensure accountability*: They emphasized the importance of including accountability mechanisms in the design of the ORE. In some dinners, they mentioned having an ORE commission or more generally, making sure the ORE is accessible to community members and held accountable to impacted communities.  
+  + *Ensure power and authority*: They elevated the importance of making sure the ORE has enough power and authority to influence city council and other departments and generally follow through on its plans.  
+  + *Staffing of the office*: To moderate concerns about the ORE, participants in a few dinners emphasized considering who leads the office--suggesting there needs to be dedicated people and people of color leading.  
+  
+# Demographics
+
+## Map of Survey Respondents {.tabset .tabset-pills}
+### Respondents who live in LA 
+__Zip codes of respondents who indicated they live in LA. Size of dot represents number of individuals who responded at that zip code__
+```{r}
+#get zip data
+zips_living<-read.csv(file ="W:/Project/OSI/EmbRACELA/Data/CommunitySurvey/commsurvey_zips_living_geocoded.csv", header=TRUE, sep=",")
+
+
+# Making sure we are working with rows that don't have any blanks
+zips_living <- zips_living[complete.cases(zips_living),]
+
+
+#Import city council districts shapefile
+cds <- st_read(
+  "W:/Project/OSI/EmbRACELA/Data/CommunitySurvey/Shapes/LA_City_Council_Districts_2012/LA_City_Council_Districts_2012.shp", quiet=TRUE)
+
+cds <- st_transform(cds, CRS("+proj=longlat +datum=WGS84 +no_defs"), quiet=TRUE)
+
+## find centroid coordinates
+cnt = st_centroid(cds)
+crd = data.frame(st_coordinates(cnt))
+
+#add ID column to each df and spatial df for joining
+cds$ID <- seq.int(nrow(cds))
+crd$ID <- seq.int(nrow(crd))
+
+##join spatial frame with data frame to get the XY columns into the spatial frame
+library(tigris)
+cds_crd<-geo_join(cds, crd, 'ID', 'ID',
+  how = "left")
+
+  
+##prep pop up labels for zip codes on point data
+ popup<-paste('Zip code:',zips_living$zip,',', 'Total:', zips_living$count)
+ 
+
+##final map! 
+leaflet(cds_crd) %>%
+  addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
+    opacity = 1.0, fillOpacity = 0.1, 
+    highlight=highlightOptions(stroke = 4, weight = 3),
+     label = cds_crd$DISTNO)%>%
+  addProviderTiles(providers$CartoDB.Positron)%>%
+addCircleMarkers(data = zips_living, lng = ~X, lat = ~Y, 
+                   weight = 2, radius = ~count, fillOpacity = 1,
+                   color="white", fillColor= "#469984", stroke = TRUE, popup=~htmlEscape(popup))
+  
+  
+  
+  
+  
+  #FOR NEXT TIME: Adding static labels:
+##addLabelOnlyMarkers(data=cds_df, ~X, ~Y, label =  ~as.character(cds_df$DISTRICT),labelOptions = labelOptions(noHide = T, direction = 'top', textOnly = T))
+
+
+
+
+
+```
+
+### Respondents who work in LA 
+__Zip codes of respondents who indicated they work in LA. Size of dot represents number of individuals who responded at that zip code__
+```{r}
+
+zips_working<-read.csv(file ="W:/Project/OSI/EmbRACELA/Data/CommunitySurvey/commsurvey_zips_working_geocoded_final.csv", header=TRUE, sep=",")
+
+# Making sure we are working with rows that don't have any blanks
+zips_working <- zips_working[complete.cases(zips_working),]
+
+
+#Import city council districts shapefile
+cds <- st_read(
+  "W:/Project/OSI/EmbRACELA/Data/CommunitySurvey/Shapes/LA_City_Council_Districts_2012/LA_City_Council_Districts_2012.shp", quiet=TRUE)
+cds <- st_transform(cds, CRS("+proj=longlat +datum=WGS84 +no_defs"))
+
+######map of council districts with zip codes of respondants who work in LA 
+#######point data sized by count per zip code
+
+## find centroid coordinates
+cnt = st_centroid(cds)
+crd = data.frame(st_coordinates(cnt))
+
+#add ID column to each df and spatial df for joining
+cds$ID <- seq.int(nrow(cds))
+crd$ID <- seq.int(nrow(crd))
+
+##join spatial frame with data frame to get the XY columns into the spatial frame
+library(tigris)
+cds_crd<-geo_join(cds, crd, 'ID', 'ID',
+  how = "left")
+   
+  
+##prep pop up labels for zip codes / point data
+ popup<-paste('Zip code:',zips_working$zip,',', 'Total:', zips_working$count)
+
+ 
+ ##final map!
+ 
+leaflet(cds) %>%
+  addPolygons(color = "#444444", weight = 1, smoothFactor = 0.5,
+    opacity = 1.0, fillOpacity = 0.1,
+    highlight=highlightOptions(stroke = 4, weight = 3),
+     label = cds_crd$DISTNO)%>%
+  addProviderTiles(providers$CartoDB.Positron)%>%
+addCircleMarkers(data = zips_working, lng = ~X, lat = ~Y, 
+                   weight = 2, radius = ~count, fillOpacity = 1,
+                   color="white", fillColor= "#7DA4D3", stroke = TRUE, popup=~htmlEscape(popup))
+
+
+
+
+
+
+
+```
+
+
+## Race and ethnicity {.tabset .tabset-pills}
+### Community survey respondents
+```{r}
+
+race <- dbGetQuery(con, "SELECT * FROM commsurvey_race") #grab race view from potsgres 
+race_count<-c('n=6', 'n=45', 'n=123', 'n=161', 'n=6', 'n=49', 'n=137') #create hover text for n
+t<-list(family="arial")
+m <- list(l=150, r=20, b=10, t=100) 
+
+
+
+#create formatting for x axis: no title, and decimals become whole percentages 
+race_x<-list(
+  title="",
+  tickformat="%")
+#create formatting for y axis: no title
+race_y<-list(
+  title=""
+) 
+##come back to this and figure out ordering! 
+
+plot_ly(race, x = ~pct, y= ~reorder(race, pct), type = 'bar', text = race_count, orientation='h', marker=list(color=('#62bce5')))%>%
+  layout(title =list(x=0.1, text="Race and Ethnicity of Respondents"), xaxis=race_x, yaxis = race_y, font=t, margin=m, plot_bgcolor="#ebebeb") 
+
+
+
+```
+
+### Dinner participants
+```{r}
+pre_race <- dbGetQuery(con, "SELECT * FROM presurvey_raceethnicity_censuscomp") #grab race view from potsgres 
+
+#create formatting for x axis: no title, and decimals become whole percentages 
+pre_race_x<-list(
+  title="",
+ tickformat="%") 
+
+#create formatting for y axis: no title
+pre_race_y<-list(
+title="") 
+
+t<-list(family="arial")
+m <- list(l=150, r=20, b=10, t=100) 
+
+plot_ly(pre_race, x =~pct, y=~reorder(response, pct), type = 'bar', marker=list(color='#62bce5'))%>%
+ layout(title=list(text="Race and Ethnicity of Respondents", x=0.1), xaxis=pre_race_x, yaxis = pre_race_y, font=t, margin=m, plot_bgcolor="#ebebeb") #use the race_x and race_y lists created earlier to implement our desired axis formatting
+
+```
+
+
+## Length of tenure in LA {.tabset .tabset-pills}
+### Community survey respondents
+```{r}
+demographics<-dbGetQuery(con, "SELECT * FROM commsurvey_demographics")
+
+live_work<-demographics[c(5:14), c(1:5)] #subset data to only get the rows for the live-work questions
+
+#remove whitespace from 'question_text' column
+
+live_work$question_text<-trimws(live_work$question_text, which = c("both", "left", "right"), whitespace = "[ \t\r\n]") 
+
+##This creates the order we want for the 'question_text:
+
+live_work$factor<-factor(live_work$question_text, ordered=TRUE, levels=c("How long have you worked in LA City?", "How long have you lived in LA City?"))
+
+##This creates the order we want for 'response' 
+live_work$legend <- factor(live_work$response, ordered = TRUE, levels=c("Less than a year","1 to 5 years","6 to 10 years", "11 to 20 years","Over 20 years"))
+
+##final graph
+
+ggplot(data=live_work, aes(x=fct_rev(question_text), y= freq, fill=fct_rev(legend)), na.rm=TRUE) + geom_bar(stat="identity") + scale_x_discrete(name="", labels = function(x) str_wrap(x, width = 20)) + scale_y_continuous(name="") +  
+  geom_text(aes(label=freq), position=position_stack(vjust=.5), size=4) + 
+  scale_fill_brewer("Blues") + 
+  labs(title = "How many respondents live or work in Los Angeles", caption="Footnote: 57 respondents indicated that they attended school in Los Angeles.")+
+  theme(plot.title = element_text(size = 14), 
+        axis.text.x = element_text(size = 10), 
+        legend.title=element_blank(), 
+        legend.text=element_text(size=10), 
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(), 
+        plot.caption = element_text(hjust = 0))
+
+
+
+
+```
+
+### Dinner participants
+```{r}
+pre_live_work_study<-dbGetQuery(con, 'SELECT * FROM presurvey_demographics')
+pre_live_work <- filter(pre_live_work_study, question_text %in% c("How long have you lived in LA City?", "How long have you worked in LA City?"))
+
+
+#remove whitespace from 'question_text' column
+  pre_live_work$question_text<-trimws(pre_live_work$question_text, which = c("both", "left", "right"), whitespace = "[ \t\r\n]")
+  
+##This creates the order we want for the 'question_text:
+
+pre_live_work$factor<-factor(pre_live_work$question_text, ordered=TRUE, levels=c("How long have you worked in LA City?", "How long have you lived in LA City?"))
+
+##This creates the order we want for 'response' 
+pre_live_work$legend <- factor(pre_live_work$response, ordered = TRUE, levels=c("Less than a year","1 to 5 years","6 to 10 years","Over 10 years", "11 to 20 years","Over 20 years"))
+
+##final graph
+ggplot(data=pre_live_work, aes(x=fct_rev(question_text), y= freq, fill=fct_rev(legend)), na.rm=TRUE) + geom_bar(stat="identity") + scale_x_discrete(name="", labels = function(x) str_wrap(x, width = 20)) + scale_y_continuous(name="") +  geom_text(aes(label = freq),
+              position=position_stack(vjust = .5), size=3) + scale_fill_brewer("Blues")+ labs(title = "How many respondents live or work in Los Angeles", caption="Footnote: 10 respondents indicated that they attended school in Los Angeles.")+theme(plot.title = element_text(size = 14), axis.text=element_text(size=12), legend.title=element_blank(), legend.text=element_text(size=10), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), plot.caption = element_text(hjust = 0))
+
+```
+
+
+## Gender {.tabset .tabset-pills}
+### Community survey respondents
+```{r}
+gender<-dbGetQuery(con, 'SELECT * FROM commsurvey_gender')
+gender<-gender[c(1:5), c(1:4)] #subset to not include 'Decline to Answer' from graph
+gender_count<-c('n=364', 'n=154', 'n=15', 'n=2', 'n=1') ##manually setting hover text
+
+gender_x<-list(title="", tickformat="%")
+gender_y<-list(title="")
+
+t<-list(family="arial")
+m <- list(l=150, r=20, b=10, t=100) 
+
+plot_ly(gender, x = ~pct, y=~fct_rev(factor(gender, levels=gender)), type = 'bar', text = gender_count, orientation='h', marker=list(color='#62bce5'))%>%
+  layout(title=list(text="Which of the following best describes your gender?", x=0.1),font=t, margin=m, strwrap(gender, width=20), xaxis=gender_x, yaxis=gender_y, plot_bgcolor="#ebebeb"
+)
+
+```
+
+
+
+### Dinner participants
+
+```{r}
+pre_demographics<-dbGetQuery(con, 'SELECT * FROM presurvey_demographics')
+
+pre_gender <- filter(pre_demographics, question_text == "Which of the following best describes your gender?")
+x<-list(title="", tickformat="%")
+y<-list(title="")
+
+t<-list(family="arial")
+m <- list(l=150, r=20, b=10, t=100) 
+
+
+plot_ly(pre_gender, x=~pct, y=~reorder(response, pct), type ='bar', text=pre_gender, orientation='h', marker=list(color='#62bce5'))%>%
+  layout(strwrap(pre_gender, width=20), title=list(text="Which of the following best describes your gender?", x=0.1), xaxis=x, yaxis=y, margin=m, font=t, plot_bgcolor="#ebebeb"
+)
+
+```
+
+## Age {.tabset .tabset-pills}
+### Community survey respondents
+```{r}
+age <- dbGetQuery(con, "SELECT * FROM commsurvey_age") #grab age view from potsgres 
+age_count<-c('n=26', 'n=175', 'n=146', 'n=71', 'n=59', 'n=48')
+
+#format for x and y axis 
+age_x<-list(
+  title="",
+  tickformat="%"
+) 
+
+age_y<-list(title="")
+
+t<-list(family="arial")
+m <- list(l=150, r=20, b=10, t=100) 
+
+
+##graph
+plot_ly(age, x = ~pct, y= ~fct_rev(factor(age, level=age)), type = 'bar', text = age_count, orientation='h', marker=list(color='#62bce5'))%>%
+  layout(title=list(text="What is your age?", x=0.1), plot_bgcolor="#ebebeb",
+ xaxis=age_x, yaxis=age_y, font=t, margin=m) 
+
+
+```
+
+### Dinner participants
+```{r}
+pre_demographics<-dbGetQuery(con, 'SELECT * FROM presurvey_demographics')
+pre_age <- filter(pre_demographics, question_text == "What is your age?")
+
+#format for x and y axis 
+
+pre_age_x<-list(
+ title="",
+  tickformat="%") 
+
+pre_age_y<-list(title="")
+t<-list(family="arial")
+m <- list(l=150, r=20, b=10, t=100) 
+
+
+
+##graph
+plot_ly(pre_age, x = ~pct, y= ~fct_rev(factor(response, level=response)), type = 'bar', orientation='h',  marker=list(color='#62bce5'))%>%
+ layout(title=list(text="What is your age?", x=0.1), xaxis=pre_age_x, yaxis=pre_age_y, font=t, margin=m, plot_bgcolor="#ebebeb"
+ ) 
+```
+
+
+
+
+## Civic engagement activities {.tabset .tabset-pills}
+
+### Community survey respondents
+```{r}
+ce<-dbGetQuery(con, "SELECT response, freq, percent FROM commsurvey_ce_activities WHERE percent > .60")
+
+
+ce$percent<-paste(round(ce$percent*100,digits=0),"%",sep="") #change column from decimals to percents for percentage 
+
+#Create table
+
+  kable(ce, col.names=c("Response","Count","Percent"))%>%
+  kable_styling(bootstrap_options = "striped")%>%
+    add_header_above(c("Top civic engagement activities respondents were involved with in the past year"=1," "=2), align='l')%>%
+    row_spec(1:3, bold=T, color="white", background="#62bce5",  extra_css = "border-bottom: 1px solid")
+  
+
+```
+
+### Dinner participants
+```{r}
+pre_ce<-dbGetQuery(con, "SELECT response, freq, percent FROM presurvey_ce_activities")
+pre_ce_top <- filter(pre_ce, percent>.70)
+
+
+
+pre_ce_top$percent<-paste(round(pre_ce_top$percent*100,digits=0),"%",sep="") #change column from decimals to percents for percentage 
+
+
+#Create table
+  
+
+
+  kable(pre_ce_top, col.names=c("Activity","Count","Percent"))%>%
+  kable_styling(bootstrap_options = "striped")%>%
+    add_header_above(c("Top civic engagement activities participants were involved with in the past year"=1," "=2), align='l')%>%
+      row_spec(1:3, bold=T, color="white", background="#62bce5",  extra_css = "border-bottom: 1px solid")
+
+```
+
+
+## Affiliation
+### Dinner participants {.tabset .tabset-pills}
+```{r}
+pre_demographics<-dbGetQuery(con, 'SELECT * FROM presurvey_demographics')
+represented <- filter(pre_demographics, question_text == "Who are you representing today?")
+x<-list(title="", tickformat="%")
+y<-list(title="")
+t<-list(family="arial")
+m <- list(l=150, r=20, b=10, t=100) 
+
+
+plot_ly(represented, x=~pct, y=~reorder(response, pct), type ='bar', text=represented, orientation='h', marker=list(color='#62bce5'))%>%
+  layout(title=list(text="Who are you representing today?", x=0.1), xaxis=x, yaxis=y, font=t, margin=m, plot_bgcolor="#ebebeb"
+)
+```
